@@ -6,7 +6,8 @@
         @onHideCList='hideColorList' @onShowCList='showColorList'
         @onShowPannel='showPannel' @onHidePannel='hidePannel' 
         @onReduceYear='reduceYear' @onReduceMonth='reduceMonth' @onAddYear='addYear' @onAddMonth='addMonth' 
-        @onToToday='toToday' @onChangeColor='nowColor' @onSelectDay='selectDay'  />
+        @onToToday='toToday' @onChangeColor='nowColor' @onSelectDay='selectDay'
+        @onAddThings='addThings'  />
   </div>
 </template>
 
@@ -53,6 +54,9 @@ export default {
     },
     showColorList(){
       console.log('色板显示');
+    },
+    addThings:function(things,day){
+      console.log('备注了'+things+day);
     }
   },
   components: {

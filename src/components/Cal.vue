@@ -49,11 +49,11 @@ export default {
     this.changeColor(this.color)
   },
   methods:{
-      changeColor:function(x,day){
-       this.color=x
+      changeColor:function(color,day){
+       this.color=color
        this.value=day
        this.index+=1 //每次改变颜色需要重新渲染 所以通过index+1来改变组件的:key值 从而使之重新渲染
-       this.$emit('onChangeColor',x)
+       this.$emit('onChangeColor',color)
      },
      selectDay:function(date){
         this.$emit('onSelectDay',date)
@@ -85,12 +85,11 @@ export default {
      showColorList(){
          this.$emit('onShowCList')
      },
-     addThings:function(x,day){
-         console.log(day);
+     addThings:function(things,day){
          this.value = day
-         this.memorial=x
-         console.log(this.memorial);
+         this.memorial=things 
          this.index+=1
+         this.$emit('onAddThings',things,day)
      }
 
   }

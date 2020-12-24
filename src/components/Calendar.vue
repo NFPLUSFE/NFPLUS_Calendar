@@ -39,7 +39,7 @@
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input @focus=focus($event) @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
+                       <input @keydown=keydown($event) @focus=focus($event) @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
                    </span>
                    </div>
                 </div>
@@ -59,7 +59,7 @@
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input @focus=focus($event)  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
+                       <input @keydown=keydown($event) @focus=focus($event)  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
                    </span>
                   </div>
                 </div>    
@@ -100,8 +100,8 @@ export default {
        oneDay:24 * 60 * 60 * 1000,
        nowDay:new Date(),
        Size:70,
-       b:[],
-       Memorial:[]
+       b:[],  //存储备注事件
+       Memorial:[] //接收备注事件和对应时间
      }
     },
    props:{
@@ -158,7 +158,7 @@ export default {
            for(let i = 0;i<42;i++){
               arr.push(new Date(startDay + i*oneDay))
              }  
-        }else if(this.range){//自定义范围 的展示天数
+         }else if(this.range){//自定义范围 的展示天数
             let length = (this.endDate - this.startDate)/oneDay,
                 startDay = this.startDate - 0,
                 addNumFront = this.startDate.getDay()-1,//计算出前面需要添加几个空白cell
@@ -179,17 +179,12 @@ export default {
       }
    },
    mounted(){
+        // 接收备注事件和对应的时间
         this.Memorial=this.memorial
-        console.log(this.Memorial);
-        if(this.Memorial.length>0){
-          console.log(this.Memorial[0].thing);
-          console.log(this.Memorial[0].time);
-        }
-        
 
         this.initColor(this.color) //初始化主题色
-        this.nowDay = this.value||new Date() //选中哪一天
-        this.Size = this.size
+        this.nowDay = this.value||new Date() 
+        this.Size = this.size 
         this.initSize(this.Size)//初始化尺寸
         let {year,month,day} = getYearMonthDay(this.nowDay) 
         this.year= year
@@ -342,28 +337,35 @@ export default {
       changeColor(e){
           this.$emit('changeColor',e.target.innerHTML,this.nowDay)
       },
+    
+    //输入框得到焦点
       focus(e){
         e.target.value = e.target.parentNode.children[0].innerText
+        e.target.style.backgroundColor='#fff'
       },
+    // 按下回车键 输入框失去焦点
+      keydown:function(theEvent){
+        if(theEvent.keyCode == "13"){
+          this.blur(theEvent)
+        }
+     },
     // 输入框失去焦点
       blur(e){
-         //把事件和对应的时间存到b数组 并发射出去
-        
-        if(e.target.value!==""){
-          
-        var thing = e.target.value
-        var time = this.nowDay
         this.b = this.Memorial 
-        this.b.push({
-          time:time,
-          thing:thing
-         })
-          this.$emit('addThings',this.b,this.nowDay)
-          e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中
-          e.target.value='' //清空输入框
-         }
+         //把事件和对应的时间存到b数组 并发射出去
+         if(e.target.value!==""){
+              var thing = e.target.value
+              var time = this.nowDay
+              this.b.push({
+                time:time,
+                thing:thing
+               })
+                e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中
+                e.target.value='' //清空输入框
+               }
+        this.$emit('addThings',this.b,this.nowDay)
       },
-      // 重新渲染的时候 判断是否有备注 有的话渲染出来
+      // 重新渲染的时候 判断是否有备注事件 有的话渲染出来
       hasThing:function(date){
         if(date!=='1'){
         var thing = ''
@@ -423,8 +425,8 @@ $lightColor: var(--lColor, #fff);
              }
            }
         .pannelDays {
-             overflow: hidden;
-             span {
+            overflow: hidden;
+            span {
                box-sizing:border-box;
                display: inline-flex; 
                width: 1rem;
@@ -445,10 +447,9 @@ $lightColor: var(--lColor, #fff);
                 font-size: 0.15rem;
                 line-height: 0.4rem;
                 position: relative;
+                // 备忘录部分
                 .memorial{
                   color:orange;
-                  text-overflow: ellipsis;
-                  // white-space: nowrap;
                   overflow: hidden;
                 }
                 .edit{
@@ -459,8 +460,7 @@ $lightColor: var(--lColor, #fff);
                   display: block;
                   height: 50%;
                   width: 60%;
-                  color:#fff;
-                 
+                  color:#000;
                 }
             }
             .cell:hover{
@@ -481,7 +481,6 @@ $lightColor: var(--lColor, #fff);
                 color:rgb(243, 113, 113)
             }
            }
-
         .pannelToday {
           text-align: center;
           height: 0.8rem;
@@ -490,7 +489,8 @@ $lightColor: var(--lColor, #fff);
             .tdLogo,.changeColor{
                width: .65rem;
                cursor: pointer;
-            }
+            } 
+            // 调色盘 色板
             .changeColor{
                position: absolute;
                right:-.3rem;
