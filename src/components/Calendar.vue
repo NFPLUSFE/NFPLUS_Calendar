@@ -39,7 +39,7 @@
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input  @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
+                       <input @focus=focus($event) @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
                    </span>
                    </div>
                 </div>
@@ -59,7 +59,7 @@
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
+                       <input @focus=focus($event)  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
                    </span>
                   </div>
                 </div>    
@@ -342,6 +342,9 @@ export default {
       changeColor(e){
           this.$emit('changeColor',e.target.innerHTML,this.nowDay)
       },
+      focus(e){
+        e.target.value = e.target.parentNode.children[0].innerText
+      },
     // 输入框失去焦点
       blur(e){
          //把事件和对应的时间存到b数组 并发射出去
@@ -366,10 +369,9 @@ export default {
         var thing = ''
         for(let i = 0;i<this.Memorial.length;i++){
           if(date.getDate()==this.Memorial[i].time.getDate()&&date.getMonth()==this.Memorial[i].time.getMonth()&&date.getYear()==this.Memorial[i].time.getYear()){
-             thing = thing + ','+this.Memorial[i].thing
+               thing = this.Memorial[i].thing
               }
             }
-            thing = thing.substr(1)
             return thing
           }
       }
