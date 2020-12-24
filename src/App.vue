@@ -2,7 +2,7 @@
   <div id="app"> 
     <!-- <Cal/> -->
     <!-- :range="['2020-11-10','2021-1-03']" :range="['2020-11-10','2020-12-03']"-->
-    <Cal Color='yellow' :palette='true' :size="60"  
+    <Cal Color='yellow' :palette='true' :size="100"  
         @onHideCList='hideColorList' @onShowCList='showColorList'
         @onShowPannel='showPannel' @onHidePannel='hidePannel' 
         @onReduceYear='reduceYear' @onReduceMonth='reduceMonth' @onAddYear='addYear' @onAddMonth='addMonth' 
