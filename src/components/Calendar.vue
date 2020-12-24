@@ -35,7 +35,7 @@
                     @click="selectDay(showDays[(i-1)*7+(j-1)])"
                             >
                        {{showDays[(i-1)*7+(j-1)].getDate()}}
-                     <!-- 备注 -->
+                     <!-- 备注 备忘录 -->
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
@@ -340,34 +340,38 @@ export default {
       },
     // 点击色板上的颜色 改变主题色
       changeColor(e){
-          this.$emit('changeColor',e.target.innerHTML)
+          this.$emit('changeColor',e.target.innerHTML,this.nowDay)
       },
     // 输入框失去焦点
       blur(e){
+         //把事件和对应的时间存到b数组 并发射出去
+        
+        if(e.target.value!==""){
+          
         var thing = e.target.value
         var time = this.nowDay
         this.b = this.Memorial 
         this.b.push({
           time:time,
           thing:thing
-        }) //把事件和对应的事件推到b数组 并发射出去
-        this.$emit('addThings',this.b)
-        if(e.target.value!==""){
-          e.target.parentNode.children[0].innerHTML=thing //把 备注 放到准备好的span中
-        }
-        e.target.value='' //清空输入框
+         })
+          this.$emit('addThings',this.b,this.nowDay)
+          e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中
+          e.target.value='' //清空输入框
+         }
       },
       // 重新渲染的时候 判断是否有备注 有的话渲染出来
       hasThing:function(date){
         if(date!=='1'){
+        var thing = ''
         for(let i = 0;i<this.Memorial.length;i++){
           if(date.getDate()==this.Memorial[i].time.getDate()&&date.getMonth()==this.Memorial[i].time.getMonth()&&date.getYear()==this.Memorial[i].time.getYear()){
-            console.log(this.Memorial[i].thing);
-            return this.Memorial[i].thing
+             thing = thing + ','+this.Memorial[i].thing
+              }
+            }
+            thing = thing.substr(1)
+            return thing
           }
-        }
-        }
-       
       }
    }
 }
@@ -453,7 +457,7 @@ $lightColor: var(--lColor, #fff);
                   display: block;
                   height: 50%;
                   width: 60%;
-                  color:orange;
+                  color:#fff;
                  
                 }
             }

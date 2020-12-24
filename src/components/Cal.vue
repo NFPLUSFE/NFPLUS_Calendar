@@ -1,6 +1,6 @@
 <template>
    <div id="cal"> 
-    <Calendar :size='size' :memorial='memorial' @addThings='addThings' :key='index'  @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
+    <Calendar :value='value' :size='size' :memorial='memorial' @addThings='addThings' :key='index'  @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
    </div>
 </template>
 
@@ -12,7 +12,8 @@ export default {
          color:'purple',
          index:0,
          Palette:'false',
-         memorial:[]
+         memorial:[],
+         value:new Date()
       }
   },
   props:{
@@ -48,8 +49,9 @@ export default {
     this.changeColor(this.color)
   },
   methods:{
-      changeColor:function(x){
+      changeColor:function(x,day){
        this.color=x
+       this.value=day
        this.index+=1 //每次改变颜色需要重新渲染 所以通过index+1来改变组件的:key值 从而使之重新渲染
        this.$emit('onChangeColor',x)
      },
@@ -83,8 +85,9 @@ export default {
      showColorList(){
          this.$emit('onShowCList')
      },
-     addThings:function(x){
-         
+     addThings:function(x,day){
+         console.log(day);
+         this.value = day
          this.memorial=x
          console.log(this.memorial);
          this.index+=1
