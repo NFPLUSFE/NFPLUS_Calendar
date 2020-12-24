@@ -90,7 +90,7 @@ export default {
        row:'',//自定义范围日历需要渲染的cell的行数
        oneDay:24 * 60 * 60 * 1000,
        nowDay:new Date(),
-       Size:"38px"
+       Size:38
      }
     },
    props:{
@@ -133,7 +133,7 @@ export default {
     //返回一个数组 数组内是需要展示在li中的时间
       showDays(){
         let arr = []
-        let oneDay = this.oneDay //一天的毫秒数
+        let oneDay = this.oneDay
         if(!this.range){// 42个（普通日历）展示天数
            let nowMonthFirstDay = getDate(this.year,this.month,1),
                week = nowMonthFirstDay.getDay(),//得到一号是星期几
@@ -165,18 +165,18 @@ export default {
         this.initColor(this.color) //初始化主题色
         this.nowDay = this.value||new Date() //选中哪一天
         this.Size = this.size
-        this.initSize(this.Size)
+        this.initSize(this.Size)//初始化尺寸
         let {year,month,day} = getYearMonthDay(this.nowDay) 
         this.year= year
         this.month=month
-        this.day=day  //普通日历 pannelNav的展示数据
+        this.day=day  //初始化普通日历 pannelNav的展示数据
         this.isActive=false //调色盘色板隐藏
         if(this.range){
            this.startDate = this.getStartEndDate(this.range,0)
            this.endDate = this.getStartEndDate(this.range,1)  //处理并拿到this.range的开始时间和结束时间
            this.length = this.showDays.length //7的倍数(包括空白li总的长度)
            this.row = this.length/7  //有几行
-        }
+        } 
    },
    methods:{
     // 返回range数组里面的开始时间和结束时间 i=0返回开始的 i=1返回结束的 
@@ -185,7 +185,7 @@ export default {
             month = range[i].split('-')[1],
             day = range[i].split('-')[2]
           if(month.substr(0,1)=='0'){
-               month = month.substr(1,1)//去掉“03”前面的0
+               month = month.substr(1,1)   //去掉“03”前面的0
              }
           if(day.substr(0,1)=='0'){
                day = day.substr(1,1)
@@ -266,8 +266,8 @@ export default {
       },
 
     // 选中某一天 
-      selectDay(date){
-        if(date!=='1'){
+      selectDay(date){ 
+        if(date!=='1'){ //文本为空的cell不能做selectDay事件
           this.nowDay = date //更新顶部.input
           let {year,month,day} = getYearMonthDay(date)
           this.year = year
@@ -319,7 +319,7 @@ export default {
       },
     // 双击做特殊标记
       dblclick(e){
-        if(e.target.innerText!==""){//文本为空的li不能做双击事件
+        if(e.target.innerText!==""){//文本为空的cell不能做双击事件
           e.target.style.border='1px solid orange'
           this.$emit('dblClick',this.nowDay)
         }                 
