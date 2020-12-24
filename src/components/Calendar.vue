@@ -28,7 +28,7 @@
                 <div v-if='!range'>
                    <div  class="row" v-for='i in 6' :key="'*'+i">
                    <span v-for='j in 7' :key="'*'+j" class='cell' 
-                    :class="{noCurMonth:!isCurMonth(showDays[(i-1)*7+(j-1)]),//li的各种样式
+                    :class="{noCurMonth:!isCurMonth(showDays[(i-1)*7+(j-1)]),//cell的各种样式
                               isCurDay:isCurDay(showDays[(i-1)*7+(j-1)]),
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
@@ -47,8 +47,8 @@
                 <div v-if='range'>
                   <div  class="row" v-for='i in this.row' :key='"="+i'>
                       <span v-for='j in 7' :key="'+'+j" 
-                      :class="{isBlank:showDays[(i-1)*7+(j-1)]=='1',//li为空白时类名时isBlank
-                              cell:showDays[(i-1)*7+(j-1)]!=='1', //li有时间值时类名为cell
+                      :class="{isBlank:showDays[(i-1)*7+(j-1)]=='1',//cell为空白时类名时isBlank
+                              cell:showDays[(i-1)*7+(j-1)]!=='1', //cell有时间值时类名为cell
                               isCurDay:isCurDay(showDays[(i-1)*7+(j-1)]),
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
@@ -154,7 +154,7 @@ export default {
         if(!this.range){// 42个（普通日历）展示天数
            let nowMonthFirstDay = getDate(this.year,this.month,1),
                week = nowMonthFirstDay.getDay(),//得到一号是星期几
-               startDay = nowMonthFirstDay - (week-1) *oneDay//推出li从哪一天开始展示
+               startDay = nowMonthFirstDay - (week-1) *oneDay//推出cell从哪一天开始展示
            for(let i = 0;i<42;i++){
               arr.push(new Date(startDay + i*oneDay))
              }  
@@ -194,7 +194,7 @@ export default {
         if(this.range){
            this.startDate = this.getStartEndDate(this.range,0)
            this.endDate = this.getStartEndDate(this.range,1)  //处理并拿到this.range的开始时间和结束时间
-           this.length = this.showDays.length //7的倍数(包括空白li总的长度)
+           this.length = this.showDays.length //7的倍数(包括空白cell总的长度)
            this.row = this.length/7  //有几行
         } 
    },
