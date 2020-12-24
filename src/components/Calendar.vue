@@ -330,9 +330,6 @@ export default {
 <style lang='scss'>
 $deepColor: var(--dColor, #fff);
 $lightColor: var(--lColor, #fff);
-// $size:38px; //这样写 可以0.8*$size 不会报错
-// $size:var(--size,38px);//如果这样写 不能0.8*$size会报错 但是可以$size
-// 所以还是用rem方式
   html{
     font-size: 38px;
   }
