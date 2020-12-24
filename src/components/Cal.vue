@@ -1,6 +1,6 @@
 <template>
    <div id="cal"> 
-    <Calendar :size='size' :key='index' @dblClick='dblClick' @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
+    <Calendar :size='size' :memorial='memorial' @addThings='addThings' :key='index'  @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
    </div>
 </template>
 
@@ -11,7 +11,8 @@ export default {
       return {
          color:'purple',
          index:0,
-         Palette:'false'
+         Palette:'false',
+         memorial:[]
       }
   },
   props:{
@@ -22,7 +23,7 @@ export default {
      size:{
          type:Number,
          default:()=>{
-             38
+             70
          }
      },
      palette:{
@@ -82,8 +83,11 @@ export default {
      showColorList(){
          this.$emit('onShowCList')
      },
-     dblClick:function(day){
-         this.$emit('onDblClick',day)
+     addThings:function(x){
+         
+         this.memorial=x
+         console.log(this.memorial);
+         this.index+=1
      }
 
   }

@@ -33,8 +33,13 @@
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
                     @click="selectDay(showDays[(i-1)*7+(j-1)])"
-                              >
+                            >
                        {{showDays[(i-1)*7+(j-1)].getDate()}}
+                     <!-- 备注 -->
+                       <span class="memorial">
+                           {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
+                       </span>
+                       <input  @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
                    </span>
                    </div>
                 </div>
@@ -48,9 +53,13 @@
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
                       @click="selectDay(showDays[(i-1)*7+(j-1)])"
-                      @dblclick='dblclick($event)'
                               >
                        {{showDays[(i-1)*7+(j-1)]!=="1"?showDays[(i-1)*7+(j-1)].getDate():""}}
+                       <!-- 备注 -->
+                       <span class="memorial">
+                           {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
+                       </span>
+                       <input  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
                    </span>
                   </div>
                 </div>    
@@ -90,7 +99,9 @@ export default {
        row:'',//自定义范围日历需要渲染的cell的行数
        oneDay:24 * 60 * 60 * 1000,
        nowDay:new Date(),
-       Size:38
+       Size:70,
+       b:[],
+       Memorial:[]
      }
     },
    props:{
@@ -120,7 +131,13 @@ export default {
       size:{
         type:Number,
         default:()=>{
-          38
+          70
+        }
+      },
+      memorial:{
+        type:Array,
+        default:()=>{
+          []
         }
       }
    },
@@ -162,6 +179,14 @@ export default {
       }
    },
    mounted(){
+        this.Memorial=this.memorial
+        console.log(this.Memorial);
+        if(this.Memorial.length>0){
+          console.log(this.Memorial[0].thing);
+          console.log(this.Memorial[0].time);
+        }
+        
+
         this.initColor(this.color) //初始化主题色
         this.nowDay = this.value||new Date() //选中哪一天
         this.Size = this.size
@@ -213,11 +238,11 @@ export default {
     //日历尺寸
       initSize(size){
         let Size = size
-        if(size<25){
-          Size=25
+        if(size<60){
+          Size=60
         }
-        if(size>100){
-          Size=100
+        if(size>120){
+          Size=120
         }
         document.getElementsByTagName('html')[0].style.fontSize = Size+'px';
       },
@@ -317,12 +342,32 @@ export default {
       changeColor(e){
           this.$emit('changeColor',e.target.innerHTML)
       },
-    // 双击做特殊标记
-      dblclick(e){
-        if(e.target.innerText!==""){//文本为空的cell不能做双击事件
-          e.target.style.border='1px solid orange'
-          this.$emit('dblClick',this.nowDay)
-        }                 
+    // 输入框失去焦点
+      blur(e){
+        var thing = e.target.value
+        var time = this.nowDay
+        this.b = this.Memorial 
+        this.b.push({
+          time:time,
+          thing:thing
+        }) //把事件和对应的事件推到b数组 并发射出去
+        this.$emit('addThings',this.b)
+        if(e.target.value!==""){
+          e.target.parentNode.children[0].innerHTML=thing //把 备注 放到准备好的span中
+        }
+        e.target.value='' //清空输入框
+      },
+      // 重新渲染的时候 判断是否有备注 有的话渲染出来
+      hasThing:function(date){
+        if(date!=='1'){
+        for(let i = 0;i<this.Memorial.length;i++){
+          if(date.getDate()==this.Memorial[i].time.getDate()&&date.getMonth()==this.Memorial[i].time.getMonth()&&date.getYear()==this.Memorial[i].time.getYear()){
+            console.log(this.Memorial[i].thing);
+            return this.Memorial[i].thing
+          }
+        }
+        }
+       
       }
    }
 }
@@ -331,7 +376,7 @@ export default {
 $deepColor: var(--dColor, #fff);
 $lightColor: var(--lColor, #fff);
   html{
-    font-size: 38px;
+    font-size: 70px;
   }
   .calendar{
       font-size: .4rem;
@@ -375,9 +420,7 @@ $lightColor: var(--lColor, #fff);
              overflow: hidden;
              span {
                box-sizing:border-box;
-               display: inline-flex;
-               justify-content: center;
-               align-items: center;  
+               display: inline-flex; 
                width: 1rem;
                height: 0.8rem;
                float: left;
@@ -386,12 +429,33 @@ $lightColor: var(--lColor, #fff);
             span.weeks{
                 background: linear-gradient(to bottom, $lightColor,#fff);
                 color:rgb(169, 169, 224);
-                font-size: .42rem;
+                font-size: .3rem;
+            }
+            span.isBlank{
+                color:transparent
             }
             span.cell{
-                border-radius: 50%;
                 cursor: pointer;
-                
+                font-size: 0.15rem;
+                line-height: 0.4rem;
+                position: relative;
+                .memorial{
+                  color:orange;
+                  text-overflow: ellipsis;
+                  // white-space: nowrap;
+                  overflow: hidden;
+                }
+                .edit{
+                  position: absolute;
+                  top: 0.28rem;
+                  background-color: transparent;
+                  border: 1px solid transparent;
+                  display: block;
+                  height: 50%;
+                  width: 60%;
+                  color:orange;
+                 
+                }
             }
             .cell:hover{
                 border: 1px solid $lightColor;

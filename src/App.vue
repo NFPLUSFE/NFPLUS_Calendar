@@ -1,8 +1,9 @@
 <template>
   <div id="app"> 
     <!-- <Cal/> -->
-    <Cal Color='yellow' :palette='true' :size="48" :range="['2020-11-10','2021-1-03']"
-        @onDblClick='dblClick' @onHideCList='hideColorList' @onShowCList='showColorList'
+    <!-- :range="['2020-11-10','2021-1-03']" -->
+    <Cal Color='yellow' :palette='true' :size="60"  :range="['2020-11-10','2020-12-03']"
+        @onHideCList='hideColorList' @onShowCList='showColorList'
         @onShowPannel='showPannel' @onHidePannel='hidePannel' 
         @onReduceYear='reduceYear' @onReduceMonth='reduceMonth' @onAddYear='addYear' @onAddMonth='addMonth' 
         @onToToday='toToday' @onChangeColor='nowColor' @onSelectDay='selectDay'  />
@@ -52,9 +53,6 @@ export default {
     },
     showColorList(){
       console.log('色板显示');
-    },
-    dblClick:function(day){
-      console.log('双击事件'+day);
     }
   },
   components: {
