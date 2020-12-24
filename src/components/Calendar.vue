@@ -128,7 +128,7 @@ export default {
               []
           }
       },
-      size:{}
+      size:{
         type:Number,
         default:()=>{
           70
