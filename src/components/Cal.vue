@@ -1,6 +1,6 @@
 <template>
    <div id="cal"> 
-    <Calendar :value='value' :size='size' :memorial='memorial' @addThings='addThings' :key='index'  @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
+    <Calendar :value='value'  :size='size' :memorial='memorial' @addThings='addThings' :key='index'  @hideColorList='hideColorList' @showColorList='showColorList' @showPannel='showPannel'  @hidePannel='hidePannel' @reduceMonth='reduceMonth' @reduceYear='reduceYear'  @addMonth='addMonth' @addYear='addYear' @toToday='toToday' @selectDay='selectDay'  @changeColor='changeColor' :color='color' :palette='Palette' :range="range" />
    </div>
 </template>
 
@@ -13,7 +13,8 @@ export default {
          index:0,
          Palette:'false',
          memorial:[],
-         value:new Date()
+         value:new Date(),
+         
       }
   },
   props:{

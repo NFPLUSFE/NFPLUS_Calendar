@@ -33,13 +33,14 @@
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
                     @click="selectDay(showDays[(i-1)*7+(j-1)])"
+                    @dblclick="clear($event)"
                             >
                        {{showDays[(i-1)*7+(j-1)].getDate()}}
                      <!-- 备注 备忘录 -->
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input @keydown=keydown($event) @focus=focus($event) @blur='blur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
+                       <input @keydown=keydown($event) @focus=focus($event) @blur='onBlur($event)' value=''  v-if='isCurMonth(showDays[(i-1)*7+(j-1)])'  type="text" class="edit">
                    </span>
                    </div>
                 </div>
@@ -53,13 +54,14 @@
                               curDay:curDay(showDays[(i-1)*7+(j-1)]),
                               isSelectNoCurDay:isSelectNoCurDay(showDays[(i-1)*7+(j-1)])}"
                       @click="selectDay(showDays[(i-1)*7+(j-1)])"
+                      @dblclick="clear($event)"
                               >
                        {{showDays[(i-1)*7+(j-1)]!=="1"?showDays[(i-1)*7+(j-1)].getDate():""}}
                        <!-- 备注 -->
                        <span class="memorial">
                            {{ hasThing(showDays[(i-1)*7+(j-1)])?hasThing(showDays[(i-1)*7+(j-1)]):"" }}
                        </span>
-                       <input @keydown=keydown($event) @focus=focus($event)  @blur='blur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
+                       <input @keydown=keydown($event) @focus=focus($event)  @blur='onBlur($event)' value=''  v-if='showDays[(i-1)*7+(j-1)]!=="1"' type="text" class="edit">
                    </span>
                   </div>
                 </div>    
@@ -74,6 +76,9 @@
                   <ul>
                       <li :class="{active:isActive}" @click='changeColor($event)' v-for="(item,index) in colors" :key="index" :id="item">{{item}}</li>
                    </ul>
+               </span>
+               <span class="clear" @click='clearAll()'>
+                 清空
                </span>
            </div>
        </div>
@@ -138,6 +143,12 @@ export default {
         type:Array,
         default:()=>{
           []
+        }
+      },
+      Thing:{
+        type:String,
+        default:()=>{
+          ''
         }
       }
    },
@@ -341,28 +352,39 @@ export default {
     //输入框得到焦点
       focus(e){
         e.target.value = e.target.parentNode.children[0].innerText
-        e.target.style.backgroundColor='#fff'
       },
     // 按下回车键 输入框失去焦点
       keydown:function(theEvent){
         if(theEvent.keyCode == "13"){
-          this.blur(theEvent)
+          theEvent.target.blur();
         }
      },
     // 输入框失去焦点
-      blur(e){
+      onBlur(e){
         this.b = this.Memorial 
          //把事件和对应的时间存到b数组 并发射出去
-         if(e.target.value!==""){
-              var thing = e.target.value
-              var time = this.nowDay
-              this.b.push({
-                time:time,
-                thing:thing
-               })
-                e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中
-                e.target.value='' //清空输入框
-               }
+              if(e.target.value!==''){
+                this.saveDate(e.target.value)   
+              }
+        e.target.value=''//清空输入框
+      },
+      // 双击清空单个cell的备注
+      clear(e){
+         this.b = this.Memorial
+         this.saveDate("")
+      },
+      // 点击“清空” 清空所有cell的备注
+      clearAll(){
+        this.saveDate("")
+      },
+      // 对 存储备注事件与对应事件 的数组进行修改
+      saveDate(thing){
+        var thing = thing
+        var time = this.nowDay
+        this.b.push({
+        time:time,
+         thing:thing
+          })
         this.$emit('addThings',this.b,this.nowDay)
       },
       // 重新渲染的时候 判断是否有备注事件 有的话渲染出来
@@ -374,7 +396,7 @@ export default {
                thing = this.Memorial[i].thing
               }
             }
-            return thing
+          return thing
           }
       }
    }
@@ -451,6 +473,10 @@ $lightColor: var(--lColor, #fff);
                 .memorial{
                   color:orange;
                   overflow: hidden;
+                  font-size: 10px;
+                  margin-top: 10px;
+                  margin-left: 3px;
+                  line-height: 14px;
                 }
                 .edit{
                   position: absolute;
@@ -482,6 +508,7 @@ $lightColor: var(--lColor, #fff);
             }
            }
         .pannelToday {
+          position: relative;
           text-align: center;
           height: 0.8rem;
           line-height: 0.8rem;
@@ -490,6 +517,11 @@ $lightColor: var(--lColor, #fff);
                width: .65rem;
                cursor: pointer;
             } 
+            .clear{
+               position: absolute;
+               left: 5px;
+               font-size: 14px;
+            }
             // 调色盘 色板
             .changeColor{
                position: absolute;

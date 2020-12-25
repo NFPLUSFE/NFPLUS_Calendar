@@ -2,7 +2,7 @@
   <div id="app"> 
     <!-- <Cal/> -->
     <!-- :range="['2020-11-10','2021-1-03']" :range="['2020-11-10','2020-12-03']"-->
-    <Cal Color='yellow' :palette='true' :size="100"  
+    <Cal Color='yellow' :palette='true' :size="70"  
         @onHideCList='hideColorList' @onShowCList='showColorList'
         @onShowPannel='showPannel' @onHidePannel='hidePannel' 
         @onReduceYear='reduceYear' @onReduceMonth='reduceMonth' @onAddYear='addYear' @onAddMonth='addMonth' 
@@ -56,7 +56,10 @@ export default {
       console.log('色板显示');
     },
     addThings:function(things,day){
-      console.log('备注了'+things+day);
+      console.log('备注了事件'+things+day);
+      for(var i = 0;i>things.length;i++){
+        console.log(things[i].thing+':'+things[i].time);
+      }
     }
   },
   components: {
