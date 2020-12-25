@@ -57,9 +57,6 @@ export default {
     },
     addThings:function(things,day){
       console.log('备注了事件'+things+day);
-      for(var i = 0;i>things.length;i++){
-        console.log(things[i].thing+':'+things[i].time);
-      }
     }
   },
   components: {

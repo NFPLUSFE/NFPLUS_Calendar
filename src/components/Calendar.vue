@@ -364,12 +364,13 @@ export default {
         this.b = this.Memorial 
          //把事件和对应的时间存到b数组 并发射出去
               if(e.target.value!==''){
-                this.saveDate(e.target.value)   
+                this.saveDate(e.target.value)
+                // e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中   
               }
         e.target.value=''//清空输入框
       },
       // 双击清空单个cell的备注
-      clear(e){
+      clear(){
          this.b = this.Memorial
          this.saveDate("")
       },
@@ -378,11 +379,11 @@ export default {
         this.saveDate("")
       },
       // 对 存储备注事件与对应事件 的数组进行修改
-      saveDate(thing){
-        var thing = thing
+      saveDate(Thing){
+        var thing = Thing
         var time = this.nowDay
         this.b.push({
-        time:time,
+         time:time,
          thing:thing
           })
         this.$emit('addThings',this.b,this.nowDay)
