@@ -365,7 +365,6 @@ export default {
          //把事件和对应的时间存到b数组 并发射出去
               if(e.target.value!==''){
                 this.saveDate(e.target.value)
-                // e.target.parentNode.children[0].innerHTML=thing //把 事件 放到准备好的span中   
               }
         e.target.value=''//清空输入框
       },
