@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <Calendar :head_bgcolor="value1" :head_color="value2" :head_size="value3" @getDate="getDate" ></Calendar>
-    </div>
+    <div>df</div>
     <!-- <router-view/> -->
   </div>
 </template>
