@@ -1,15 +1,15 @@
 <template id="Calendar">
   <div>
-    <div class="plan" @click="shouldMonth" :class="{choosed: !isActive}">
-      <div
-        class="title"
-      >{{(new Date()).getFullYear()}} {{(new Date()).getMonth()+1}} {{(new Date()).getDate()}}</div>
-    </div>
+    <div
+      class="plan"
+      @click="shouldMonth"
+      :class="{choosed: !isActive}"
+    >{{(new Date()).getFullYear()}} {{(new Date()).getMonth()+1}} {{(new Date()).getDate()}}</div>
     <div class="calendar-box" :class="{choosed: isActive}">
       <div class="head">
-        <div class="word-size pre" @click="preYear"><</div>
+        <div class="word-size pre" @click="preYear">&lt;</div>
         <div class="word-size cur">{{curYear}}</div>
-        <div class="word-size next" @click="nextYear">></div>
+        <div class="word-size next" @click="nextYear">&gt;</div>
         <ul class="weeks">
           <li v-for="item in ['一','二','三','四','五','六','日']" :key="item">{{item}}</li>
         </ul>
@@ -25,6 +25,7 @@
               :currentMonth="curMonth"
               :currentDate="curDate"
               :currentDay="curDay"
+              @dateClick="gainDate"
             />
           </span>
         </div>
@@ -45,19 +46,49 @@ export default {
   components: {
     DateGrid
   },
+  props: {
+    color: {
+      type: String,
+      default: "red"
+    },
+    backgroundColor: {
+      type: String,
+      default: "gray"
+    },
+    opacity: {
+      type: String,
+      default: "0.3"
+    },
+    fontSize: {
+      type: String,
+      default: "48"
+    }
+  },
   data() {
     return {
       isActive: true,
       curYear: 0,
       curMonth: 0,
       curDate: 0,
-      curDay: 0
+      curDay: 0,
+      sonDate: 0
     };
   },
   mounted() {
     this.currentDate();
+    this.showStyle();
   },
   methods: {
+    showStyle() {
+      let pageOne = document.getElementsByClassName("plan")[0];
+      // console.log(this.color);
+      // console.log(pageOne);
+
+      pageOne.style.color = this.color;
+      pageOne.style.backgroundColor = this.backgroundColor;
+      pageOne.style.opacity = this.opacity;
+      pageOne.style.fontSize = this.fontSize;
+    },
     // 获取当前日期
     currentDate(cur_1, cur_2, cur_3) {
       // debugger
@@ -87,17 +118,33 @@ export default {
       setTimeout(() => {
         window.scroll(0, (date.getMonth() + 1) * 500);
       }, 100);
+
+      // 发送当前时间
+      this.$emit(
+        "gainCurDate",
+        `${this.curYear}年${this.curMonth}月${this.curDate}日`
+      );
     },
     // 上一年
-    preYear() {
+    preYear(item) {
       this.curYear = this.curYear - 1;
+      this.currentDate(this.curYear, 0, 1);
 
-      this.currentDate(that.curYear, 0, 1);
+      this.$emit("yearClick", this.curYear);
     },
     // 下一年
-    nextYear() {
+    nextYear(item) {
       this.curYear = this.curYear + 1;
       this.currentDate(this.curYear, 0, 1);
+
+      this.$emit("yearClick", this.curYear);
+    },
+    // 发送日期
+    gainDate(item) {
+      this.sonDate = item;
+      // console.log(this.sonDate);
+
+      this.$emit("obtainDate", this.sonDate);
     }
   }
 };
@@ -111,19 +158,15 @@ export default {
   line-height: 150px;
   text-align: center;
   border-radius: 10px;
-  background-color: #cccccc;
-  opacity: 0.6;
+  background-color: gray;
+  opacity: 0.3;
   margin: 200px auto;
-}
-
-.title {
-  width: 100%;
-  height: 100px;
   font-size: 48px;
   font-weight: 600;
   /* padding: 10px 0 0 20px; */
-  color: rgb(209, 36, 6);
+  color: red;
 }
+
 /* 主体 */
 .calendar-box {
   width: 100%;

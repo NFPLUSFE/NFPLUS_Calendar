@@ -11,11 +11,12 @@
         "
         class="date li-box"
         :class="{Highlight:gridItemIndex == item}"
-        @click="gridItemIndex = item"
+        @click="clear(item)"
       >
         {{ item - currMonthFirstDay + 1 }}
         <span
           class="lunarDate"
+          :class="{Highlight:gridItemIndex == item}"
         >{{getLunarDay(currentYear, currentMonth, item-1)}}</span>
       </div>
     </span>
@@ -81,14 +82,41 @@ export default {
 
       if (
         date.getFullYear() == this.currentYear &&
-        date.getMonth() + 1 == this.currentMonth
+        date.getMonth() + 1 == this.currentMonth &&
+        date.getDate() == this.currentDate
       ) {
         setTimeout(() => {
           let all = document.getElementsByClassName("DateGrid");
           all[this.currentMonth - 1].children[this.currentDate].className =
             "grid Highlight";
+
+          // let lunar = document.getElementsByClassName("lunarDate");
+          // for(let i=0;i<lunar.length;i++){
+          //   lunar[i].style.color = "#fffae5";
+          // }
         }, 100);
       }
+    },
+    // 点击 高亮
+    clear(m) {
+      // debugger
+      setTimeout(() => {
+        this.gridItemIndex = m;
+        
+        let special = document.getElementsByClassName("Highlight");
+
+        for (let i = 0; i < special.length; i++) {
+          special[i].style.backgroundColor = "transparent";
+        }
+
+        // 发送点击时间
+        this.$emit(
+          "dateClick",
+          `${this.currentYear}年${this.index - 1}月${m -
+            this.currMonthFirstDay +
+            1}日`
+        );
+      }, 100);
     },
     // 农历
     getLunarDay(solarYear, solarMonth, solarDay) {
@@ -281,6 +309,7 @@ export default {
   line-height: 40px;
   text-align: center;
   font-size: 14px;
+  color: #000000;
 }
 
 .lunarDate {
