@@ -115,6 +115,7 @@ export default{
       head_color:'',
       head_bgcolor:'',
       head_size:'',
+      timeFormate:'',
   },
     data (){
       return{
@@ -311,7 +312,7 @@ export default{
             }, 150)
         },
 
-        // 点击时 加背景色
+        // 点击时 加背景色&回调当前选择的时间
         bg_color1(i, ro) {
             var ff = document.getElementsByClassName(ro)[i]
             this.msg_day=ff.innerText
@@ -322,9 +323,10 @@ export default{
                 ff.style.borderRadius = "50%"
 
             }
-            var date=`${this.msg_year}-${this.msg_month}-${this.msg_day}`
-            // console.log(date);
-            this.$emit('getDate',date)
+            // 回调当前选择的时间
+            var date=`${this.msg_year}${this.timeFormate}${this.msg_month}${this.timeFormate}${this.msg_day}`
+                this.$emit('getDate',date)
+            
         },
         //给当前日期加背景色和下个月的日期修改为浅色字体
         auto_color() {
