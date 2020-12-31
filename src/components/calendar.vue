@@ -1,6 +1,6 @@
 <template id="Calendar">
 <div class="box" v-cloak>
-        <!-- 整体日期显示 -->
+        <!-- 当前日期显示 -->
         <p class="datePlay">{{init_year}}-{{init_month}}-{{init_day}}</p>
         <!-- 主体内容 -->
         <div class="w">
@@ -8,13 +8,13 @@
             <div class="head">
                 <ul class="clearfix">
                     <!-- list1 -->
-                    <li class="clearfix">
+                    <li class="">
                         <div class="clearfix">
                             <span>{{ msg_year }}年</span>
                             <span class="lab-r">
-                      <img v-show="imgFlag1" src="../assets/images/button_down.png" alt="" @click="imgPlay1">
-                      <img v-show="!imgFlag1" src="../assets/images/button_up.png" alt="" @click="imgPlay1">
-                      </span>
+                                <img v-show="imgFlag1" src="../assets/images/button_down.png" alt="" @click="imgPlay1">
+                                <img v-show="!imgFlag1" src="../assets/images/button_up.png" alt="" @click="imgPlay1">
+                            </span>
                         </div>
                         <div class="list1" v-show="!imgFlag1">
                             <ul>
@@ -26,15 +26,15 @@
                     <li>
                         <div>
                             <span class="lab-l">
-                      <img src="../assets/images/angle_left.png" alt="" @click="sub">
-                    </span>
+                                <img src="../assets/images/angle_left.png" alt="" @click="sub">
+                            </span>
                             <span style="display: inline-block;" class="month">{{ msg_month }}月
-                          <img src="../assets/images/button_down.png" alt="" @click="imgPlay2" v-show="imgFlag2">
-                          <img src="../assets/images/button_up.png" alt="" @click="imgPlay2" v-show="!imgFlag2">
-                        </span>
+                                <img src="../assets/images/button_down.png" alt="" @click="imgPlay2" v-show="imgFlag2">
+                                <img src="../assets/images/button_up.png" alt="" @click="imgPlay2" v-show="!imgFlag2">
+                            </span>
                             <span class="lab-r">
-                      <img src="../assets/images/angle_right.png" alt="" @click="add">
-                    </span>
+                                <img src="../assets/images/angle_right.png" alt="" @click="add">
+                            </span>
                         </div>
                         <div class="list2" v-show="!imgFlag2">
                             <ul>
@@ -48,9 +48,9 @@
                         <div>
                             <span class="festival">{{ msg_festival }}</span>
                             <span class="lab-r">
-                      <img v-show="imgFlag3" src="../assets/images/button_down.png" alt="" @click="imgPlay3">
-                      <img v-show="!imgFlag3" src="../assets/images/button_up.png" alt="" @click="imgPlay3">
-                    </span>
+                                <img v-show="imgFlag3" src="../assets/images/button_down.png" alt="" @click="imgPlay3">
+                                <img v-show="!imgFlag3" src="../assets/images/button_up.png" alt="" @click="imgPlay3">
+                            </span>
                         </div>
                         <div class="list3" v-show="!imgFlag3">
                             <ul>
@@ -157,6 +157,12 @@ export default{
             this.imgFlag1 = !this.imgFlag1
             this.play()
         },
+        // 月份显示与隐藏
+        MonVal(data) {
+            this.msg_month = data;
+            this.imgFlag2 = !this.imgFlag2
+            this.play()
+        },
         // 节日显示与隐藏
         FesVal(data) {
             this.msg_festival = data.name
@@ -176,12 +182,7 @@ export default{
             }
             this.play()
         },
-        // 月份显示与隐藏
-        MonVal(data) {
-            this.msg_month = data;
-            this.imgFlag2 = !this.imgFlag2
-            this.play()
-        },
+        
         //通过点击下方的div来触发  隐藏列表
         hid() {
             this.imgFlag1 = this.imgFlag2 = this.imgFlag3 = true
@@ -312,23 +313,24 @@ export default{
             }, 150)
         },
 
-        // 点击时 加背景色&回调当前选择的时间
+        // 点击时 加背景色&去除背景色
         bg_color1(i, ro) {
             var ff = document.getElementsByClassName(ro)[i]
             this.msg_day=ff.innerText
             if (ff.style.backgroundColor == "red") {
                 ff.style.backgroundColor = "transparent"
-            } else {
+            } 
+            else {
                 ff.style.backgroundColor = "red"
                 ff.style.borderRadius = "50%"
 
             }
-            // 回调当前选择的时间
-            var date=`${this.msg_year}${this.timeFormate}${this.msg_month}${this.timeFormate}${this.msg_day}`
-                this.$emit('getDate',date)
+            // 调用callBack 函数
+            this.callBack()
             
         },
-        //给当前日期加背景色和下个月的日期修改为浅色字体
+
+        //给当前日期加背景色&下个月的日期修改为浅色字体
         auto_color() {
             var that = this
             setTimeout(function() {
@@ -339,9 +341,10 @@ export default{
                 var ff1 = document.getElementsByClassName('row1')
                 var ff2 = document.getElementsByClassName('row2')
                 var ff3 = document.getElementsByClassName('row3')
-                var ff4 = document.getElementsByClassName('row5')
+                var ff4 = document.getElementsByClassName('row4')
                 var ff5 = document.getElementsByClassName('row5')
                 var ff6 = document.getElementsByClassName('row6')
+                // 将所有的日期背景置为透明
                 for (var i = 0; i < 7; i++) {
                     ff1[i].style.backgroundColor = "transparent"
                     ff2[i].style.backgroundColor = "transparent"
@@ -350,6 +353,7 @@ export default{
                     ff5[i].style.backgroundColor = "transparent"
                     ff6[i].style.backgroundColor = "transparent"
                 }
+                // 将当前日期的背景颜色置为 #ffbb00
                 if (that.msg_year == year && that.msg_month == month) {
                     for (var i = 0; i < 7; i++) {
                         if (ff1[i].innerText == day) {
@@ -394,7 +398,7 @@ export default{
                         }
                     }
                 }
-                // 浅色背景
+                // 将非本月的日期背景颜色置为 浅色背景 #d9d9d9 (非本月的日期只可能出现在最后两行)
                 for (var i = 0; i < 7; i++) {
                     if (ff5[i].innerText < 16) {
                         // ff5[i].style.backgroundColor = "#d9d9d9"
@@ -417,6 +421,7 @@ export default{
 
 
         },
+
         // 标记节假日
         sign() {
             var ff1 = document.getElementsByClassName('row1')
@@ -452,7 +457,13 @@ export default{
             document.querySelector("p").style.backgroundColor=this.head_bgcolor
             document.querySelector("p").style.color=this.head_color
             document.querySelector("p").style.fontSize=this.head_size+'px'
-        }
+        },
+        // 回调函数
+        callBack(){
+            // 回调当前选择的时间和格式选择
+            var date=`${this.msg_year}${this.timeFormate}${this.msg_month}${this.timeFormate}${this.msg_day}`
+                this.$emit('getDate',date)
+        },
     },
     mounted() {
         // 调用时间初始化函数
@@ -495,6 +506,7 @@ export default{
   padding: 10px;
   padding-top: 0;
 }
+/* 搜索框和下拉列表 */
 .box .w .head {
   width: 100%;
   height: 48px;
@@ -503,18 +515,19 @@ export default{
 .box .w .head ul {
   padding: 5px 0px 15px 0;
 }
-.box .w .head ul li:nth-child(2) {
-  width: 136px;
-}
-.box .w .head ul li:nth-child(3) {
-  width: 128px;
-}
+
 .box .w .head ul > li {
   float: left;
   margin-right: 10px;
   height: 30px;
   line-height: 30px;
   border: 1px solid #999999;
+}
+.box .w .head ul li:nth-child(2) {
+  width: 136px;
+}
+.box .w .head ul li:nth-child(3) {
+  width: 128px;
 }
 .box .w .head ul > li:last-child {
   margin-right: 0;
@@ -524,8 +537,6 @@ export default{
   padding: 0 10px;
 }
 .box .w .head ul > li .lab-l {
-  font-size: 18px;
-  color: #7a7aa3;
   padding: 0 5px;
   border-right: 1px solid #cccccc;
 }
@@ -534,8 +545,6 @@ export default{
   vertical-align: middle;
 }
 .box .w .head ul > li .lab-r {
-  color: #7a7aa3;
-  font-size: 18px;
   padding: 0 5px;
   border-left: 1px solid #cccccc;
 }
@@ -544,7 +553,7 @@ export default{
   vertical-align: middle;
 }
 .box .w .head ul > li .month {
-    width: 68px;
+  width: 68px;
   padding: 0 3px;
 }
 .box .w .head ul > li .month img {
@@ -552,7 +561,8 @@ export default{
   vertical-align: middle;
 }
 .box .w .head ul > li .festival {
-    width: 98px!important;
+    padding: 0 12px;
+    
 }
 .box .w .head ul > li .list1 {
   overflow-x: auto;
@@ -650,6 +660,7 @@ export default{
 .box .w .head ul > li .list3 ul li:hover {
   background-color: pink;
 }
+/* 日期头部 */
 .box .w .content .con-head {
   height: 40px;
 }
@@ -671,6 +682,7 @@ export default{
 .box .w .content .con-head ul li:last-child {
   color: red;
 }
+/* 日期内容 */
 .box .w .content .con-row {
   display: flex;
   width: 100%;
@@ -686,7 +698,7 @@ export default{
 }
 .box .w .content .con-row span:hover {
   background-color: pink!important;
-  border-radius: 30px;
+  border-radius: 50%;
 }
 
 </style>
